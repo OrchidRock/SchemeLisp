@@ -19,6 +19,10 @@ or
 
 `$ scheme --load lazy_evaluator.scm`
 
+or
+
+`$ scheme --load amb_evaluator.scm`
+
 
 # Test
 
