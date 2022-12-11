@@ -4,6 +4,7 @@
 
 (load "environment.scm")
 (load "grammars.scm")
+(load "debug_print.scm")
 
 (define (eval expr env)
     (cond ((self-evaluating? expr) expr)
@@ -11,10 +12,10 @@
           (else ((get 'eval (car expr)) expr env))))
 
 (define (eval expr env)
-  (display "eval: ")
-  (display expr)
-  ;(display "pair?: " (application? expr))
-  (newline)
+  (display-debug "eval: ")
+  (display-debug expr)
+  ;(display-debug "pair?: " (application? expr))
+  (newline-debug)
   (cond ((self-evaluating? expr) expr)
         ((variable? expr) (lookup-variable-value expr env))
         ((quoted? expr) (text-of-quotation expr))
@@ -43,25 +44,25 @@
         ((unless? expr) (eval (unless->if expr) env))
 
         ((application? expr)
-         ;(display "lv: " (list-of-values (operands expr) env))
-         ;(newline)
+         ;(display-debug "lv: " (list-of-values (operands expr) env))
+         ;(newline-debug)
          (apply (eval (operator expr) env)
                 (list-of-values (operands expr) env)))
         (else
-            (error "Unknown exprression type -- EVAL" expr))))
+            (error-report "Unknown exprression type -- EVAL" expr))))
 
 (define (apply procedure arguments)
     (cond ((primitive-procedure? procedure)
                 (apply-primitive-procedure procedure arguments))
           ((compound-procedure? procedure)
-                (display "apply-compound-procedure :")
-                (display (procedure-parameters procedure))
-                (display " ")
-                (display (procedure-body procedure))
-                (display "  ")
+                (display-debug "apply-compound-procedure :")
+                (display-debug (procedure-parameters procedure))
+                (display-debug " ")
+                (display-debug (procedure-body procedure))
+                (display-debug "  ")
                 (user-print-objects arguments)
-                ;(display arguments)
-                (newline)
+                ;(display-debug arguments)
+                (newline-debug)
 
                 (eval-sequence
                     (procedure-body procedure)
@@ -69,7 +70,7 @@
                         (procedure-parameters procedure)
                         arguments
                         (procedure-environment procedure))))
-          (else (error "Unknown procedure type -- APPLY" procedure))))
+          (else (error-report "Unknown procedure type -- APPLY" procedure))))
 
 
 
@@ -81,30 +82,9 @@
   (let ((input (read)))
     (let ((output (eval input the-global-environment)))
       (announce-output output-prompt)
-      (user-print output)))
+      (user-print-output output)))
   (driver-loop))
 
-(define (prompt-for-input string)
-  (newline) (newline) (display string) (newline))
-
-(define (announce-output string)
-  (newline) (display string) (newline))
-
-(define (user-print-objects objects)
-    (cond ((pair? objects)
-               (user-print (car objects))
-               (display " ")
-               (user-print-objects (cdr objects)))
-          ((null? objects) 'ok)
-          (else (user-print objects))))
-
-(define (user-print object)
-  (if (compound-procedure? object)
-      (display (list 'compound-procedure
-                     (procedure-parameters object)
-                     (procedure-body object)
-                     '<procedure-env>))
-      (display object)))
 
 (define the-global-environment (setup-environment))
 (driver-loop)

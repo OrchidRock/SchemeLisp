@@ -11,3 +11,27 @@ This is a  Lisp interpreter implement by Scheme which is a dialect of Lisp.
 
 `$ scheme --load eval_reply.scm`
 
+or
+
+`$ scheme --load analyzing_evaluator.scm`
+
+or
+
+`$ scheme --load lazy_evaluator.scm`
+
+
+# Test
+
+For example (run lazy_evaluator.scm):
+
+```
+
+Lazy-Eval input:
+(+ 1 2)
+
+;;; Lazy-Eval value:
+3
+
+;;; Lazy-Eval input:
+
+``

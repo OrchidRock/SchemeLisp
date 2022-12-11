@@ -4,10 +4,10 @@
 
 
 (define (error-no-exception msg . others)
-    (display msg)
-    (display " ")
-    (display others)
-    (newline)
+    (display-debug msg)
+    (display-debug " ")
+    (display-debug others)
+    (newline-debug)
     -1)
 ;:
 ;: We can rewrite "list-of-values" to implement the "simultaneous" scope rule.
@@ -257,7 +257,7 @@
         (if (cond-else-clause? first)
             (if (null? rest)
                 (sequence->exp (cond-actions first))
-                (error "ELSE clause isn't last -- COND->IF"
+                (error-report "ELSE clause isn't last -- COND->IF"
                        clauses))
 
             (if (and (cond-form2-clause? first)
@@ -400,7 +400,6 @@
 ;: Design a way without constructing it:
 ;: To translate all internal definitations to lambda exprressions will create new problem
 ;: that which breaks the order of set!.
-
 (define (scan-out-defines-optim proc-body)
     (define (iter body define-caluses set-caluses expr-calues)
         (if (null? body)
@@ -424,7 +423,6 @@
             proc-body
             (append (car items) (cdr items)))))
 
-;: exercise 4.16 b)
 (define (scan-out-defines proc-body)
     (define (iter body let-caluses set-caluses expr-calues)
         (if (null? body)
@@ -451,13 +449,12 @@
 ;: scan-out-defines can't match the analyzing_mceval.scm
 ;:
 (define (make-procedure parameters body env)
-    (display "make-procedure scan-out-defines: ")
-    (display body)
-    (newline)
-    (display "           after: ")
-    ;(display (scan-out-defines-optim body))
-    (newline)
-    ; exercise 4.16 c)
+    (display-debug "make-procedure scan-out-defines: ")
+    (display-debug body)
+    (newline-debug)
+    (display-debug "           after: ")
+    ;(display-debug (scan-out-defines-optim body))
+    (newline-debug)
     ;(list 'procedure parameters (scan-out-defines-optim body) env))
     ;(list 'procedure parameters (scan-out-defines body) env))
     (list 'procedure parameters body env))
@@ -475,5 +472,6 @@
   (tagged-list? proc 'primitive))
 
 (define (primitive-implementation proc) (cadr proc))
+
 
 
