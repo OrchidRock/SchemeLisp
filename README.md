@@ -1,5 +1,5 @@
 ## SchemeLisp
-This is a  Lisp interpreter implement by Scheme which is a dialect of Lisp.
+This is a  scheme-like interpreter implement by Scheme which is a dialect of Lisp.
 
 > The main structure and code com from `SICP`.
 
